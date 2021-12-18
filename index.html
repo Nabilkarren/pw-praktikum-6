@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+
+<nav class="navbar sticky-top navbar-expand-lg navbarnavbar-light" style="background-color: #F2F2F2;">
+    <div class="container-fluid">
+      <a class="navbar-brand mx-auto">
+        <svg id="logo-14" width="73" height="49" viewBox="0 0 73 49" fill="none" xmlns="http://www.w3.org/2000/svg"> 
+            <path d="M46.8676 24C46.8676 36.4264 36.794 46.5 24.3676 46.5C11.9413 46.5 1.86765 36.4264 1.86765 24C1.86765 11.5736 11.9413 1.5 24.3676 1.5C36.794 1.5 46.8676 11.5736 46.8676 24Z" class="ccustom" fill="#68DBFF"></path> <path d="M71.1324 24C71.1324 36.4264 61.1574 46.5 48.8529 46.5C36.5484 46.5 26.5735 36.4264 26.5735 24C26.5735 11.5736 36.5484 1.5 48.8529 1.5C61.1574 1.5 71.1324 11.5736 71.1324 24Z" class="ccompli1" fill="#FF7917"></path> <path d="M36.6705 42.8416C42.8109 38.8239 46.8676 31.8858 46.8676 24C46.8676 16.1144 42.8109 9.17614 36.6705 5.15854C30.5904 9.17614 26.5735 16.1144 26.5735 24C26.5735 31.8858 30.5904 38.8239 36.6705 42.8416Z" class="ccompli2" fill="#5D2C02"></path>
+        </svg>
+        <h4>PT. Once Sejahtera</h4>
+      </a>
+    </div>
+  </nav>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="column mx-auto">
+                <table border="4">
+                    <thead>
+                        <tr>
+                            <th>Nama Pelanggan</th>
+                            <td><input type="text" name="pelanggan" id="nama_pelanggan" required></td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Kategori</th>
+                            <td colspan="2">
+                                <select id="kategoriList" onfocus="clearTables()">
+                                    <option value="Sos">Sosial</option>
+                                    <option value="Rum">Rumah</option>
+                                    <option value="Apart">Apartemen</option>
+                                    <option value="Indust">Industri</option>
+                                    <option value="Vil">Villa</option>
+                                </select>   
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Hari Pemakaian</th>
+                            <td colspan="2"><input type="number" id="hari" name="hari" min="" max="30" onfocus="clearTables()"></td>
+                        </tr>
+                        <tr id="button">
+                            <td colspan="2"><input type="button" name="button" id="button" value="Calculate" onclick="hitung(); validateForm();" onmousedown="clearTables()"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="column">
+
+                <h2>Rincian Tagihan</h2>
+
+                <table class="styled-table">
+                    <thead>
+                        <tr>
+                            <th>Jumlah</th>
+                            <th>Tarif per KWH</th>
+                            <th>Abodemen</th>
+                            <th>Sub-Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="hasil">
+                        <!-- <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr> -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="column">
+                <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Subtotal</th>
+                        <td id="sub"></td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>Pajak</th>
+                            <td id="pajak"></td>
+                        </tr>
+                        <tr>
+                            <th>Bayar</th>
+                            <td id="bayar"></td>
+                        </tr>
+                    </tbody>
+                </table>    
+            </div>
+        </div>
+    </div>
+
+    <!-- <script src="script.js"></script> -->
+    <script>
+
+        var arJumlah = [];
+        var arTarif = [];
+        var arAbodemen = [];
+        var arSub = [];
+
+        var n = 1;
+        var x = 0;
+
+        var abodemen;
+        var tarif;
+        var pajak;
+        var subtotal;
+        var total;
+
+        function hitung(){
+
+            var hari = document.getElementById("hari").value;
+
+            var select = document.getElementById("kategoriList");
+            var value = select.options[select.selectedIndex].value;
+            // console.log(value);
+
+            if(hari < 31){
+
+                if(value == "Sos"){
+
+                    abodemen = 10000;
+                    tarif = 300 ;
+                    pajak = 0;
+                    
+                    var addRow = document.getElementById("hasil");
+                    
+                    for(let i = 1; i<=hari; i++){
+
+                        arJumlah[x] = i;
+                        arTarif[x] = tarif;
+                        arAbodemen[x] = abodemen;
+                        arSub[x] = abodemen + arTarif[x] ;
+                        
+                        addRow.innerHTML += `
+                            <tr>
+                                <td>${arJumlah[x]}</td>
+                                <td>${arTarif[x]}</td>
+                                <td>${arAbodemen[x]}</td>
+                                <td>${arSub[x]}</td>
+                            </tr>
+                        `
+                        subtotal = arSub[x];
+                        tarif += 300;
+                        x++;
+                    }
+
+                    var sub = document.getElementById("sub");
+                    sub.innerHTML = subtotal;
+                    var Pajak = document.getElementById("pajak");
+                    Pajak.innerHTML = (subtotal*pajak);
+                    var bayar = document.getElementById("bayar");
+                    bayar.innerHTML = (subtotal*pajak)+subtotal;
+
+                }else if(value == "Rum"){
+                    abodemen = 30000;
+                    tarif = 500;
+                    pajak = 0.1;
+
+                    var addRow = document.getElementById("hasil");
+                    
+                    for(let i = 1; i<=hari; i++){
+
+                        arJumlah[x] = i;
+                        arTarif[x] = tarif;
+                        arAbodemen[x] = abodemen;
+                        arSub[x] = abodemen + arTarif[x] ;
+                        
+                        addRow.innerHTML += `
+                            <tr>
+                                <td>${arJumlah[x]}</td>
+                                <td>${arTarif[x]}</td>
+                                <td>${arAbodemen[x]}</td>
+                                <td>${arSub[x]}</td>
+                            </tr>
+                        `
+                        subtotal = arSub[x];
+                        tarif += 500;
+                        x++;
+                    }
+
+                    var sub = document.getElementById("sub");
+                    sub.innerHTML = subtotal;
+                    var Pajak = document.getElementById("pajak");
+                    Pajak.innerHTML = (subtotal*pajak);
+                    var bayar = document.getElementById("bayar");
+                    bayar.innerHTML = (subtotal*pajak)+subtotal;
+
+                }else if(value == "Apart"){
+                    abodemen = 50000;
+                    tarif = 750;
+                    pajak = 0.15;
+
+                    var addRow = document.getElementById("hasil");
+                    
+                    for(let i = 1; i<=hari; i++){
+
+                        arJumlah[x] = i;
+                        arTarif[x] = tarif;
+                        arAbodemen[x] = abodemen;
+                        arSub[x] = abodemen + arTarif[x] ;
+                        
+                        addRow.innerHTML += `
+                            <tr>
+                                <td>${arJumlah[x]}</td>
+                                <td>${arTarif[x]}</td>
+                                <td>${arAbodemen[x]}</td>
+                                <td>${arSub[x]}</td>
+                            </tr>
+                        `
+                        subtotal = arSub[x];
+                        tarif += 750;
+                        x++;
+                    }
+
+                    var sub = document.getElementById("sub");
+                    sub.innerHTML = subtotal;
+                    var Pajak = document.getElementById("pajak");
+                    Pajak.innerHTML = (subtotal*pajak);
+                    var bayar = document.getElementById("bayar");
+                    bayar.innerHTML = (subtotal*pajak)+subtotal;
+
+                }else if(value == "Indust"){
+                    abodemen = 75000;
+                    tarif = 1000;
+                    pajak = 0.2;
+
+                    var addRow = document.getElementById("hasil");
+                    
+                    for(let i = 1; i<=hari; i++){
+
+                        arJumlah[x] = i;
+                        arTarif[x] = tarif;
+                        arAbodemen[x] = abodemen;
+                        arSub[x] = abodemen + arTarif[x] ;
+                        
+                        addRow.innerHTML += `
+                            <tr>
+                                <td>${arJumlah[x]}</td>
+                                <td>${arTarif[x]}</td>
+                                <td>${arAbodemen[x]}</td>
+                                <td>${arSub[x]}</td>
+                            </tr>
+                        `
+                        subtotal = arSub[x];
+                        tarif += 1000;
+                        x++;
+                    }
+
+                    var sub = document.getElementById("sub");
+                    sub.innerHTML = subtotal;
+                    var Pajak = document.getElementById("pajak");
+                    Pajak.innerHTML = (subtotal*pajak);
+                    var bayar = document.getElementById("bayar");
+                    bayar.innerHTML = (subtotal*pajak)+subtotal;
+
+                }else{
+                    abodemen = 100000;
+                    tarif = 1250;
+                    pajak = 0.25;
+
+                    var addRow = document.getElementById("hasil");
+                    
+                    for(let i = 1; i<=hari; i++){
+
+                        arJumlah[x] = i;
+                        arTarif[x] = tarif;
+                        arAbodemen[x] = abodemen;
+                        arSub[x] = abodemen + arTarif[x] ;
+                        
+                        addRow.innerHTML += `
+                            <tr>
+                                <td>${arJumlah[x]}</td>
+                                <td>${arTarif[x]}</td>
+                                <td>${arAbodemen[x]}</td>
+                                <td>${arSub[x]}</td>
+                            </tr>
+                        `
+                        subtotal = arSub[x];
+                        tarif += 1250;
+                        x++;
+                    }
+
+                    var sub = document.getElementById("sub");
+                    sub.innerHTML = subtotal;
+                    var Pajak = document.getElementById("pajak");
+                    Pajak.innerHTML = (subtotal*pajak);
+                    var bayar = document.getElementById("bayar");
+                    bayar.innerHTML = (subtotal*pajak)+subtotal;
+
+                }
+
+            }else{
+                alert("Jumlah Hari Tidak Valid");
+                return false;
+            }
+        }
+
+        function clearTables(){
+            document.getElementById("hasil").innerHTML = " ";
+            document.getElementById("sub").innerHTML = " ";
+            document.getElementById("pajak").innerHTML = " ";
+            document.getElementById("bayar").innerHTML = " ";
+        }
+
+        function validateForm(){
+            let getField = document.getElementById("nama_pelanggan").value;
+
+            if(getField == "" || getField == null){
+                alert("Nama harus diisi !");
+                clearTables();
+                return false;
+            }
+        }
+
+    </script>
+</body>
+</html>
